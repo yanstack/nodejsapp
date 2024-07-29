@@ -3,8 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'yanstack15/nodejsapp'
-        DOCKER_USERNAME = credentials('docker-hub-jenkins').username
-        DOCKER_PASSWORD = credentials('docker-hub-jenkins').password
+
     }
 
     stages {
@@ -19,12 +18,14 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', '') {
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-jenkins', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         bat ''' 
-                            echo ${DOCKER_PASSWORD}  
-                            docker login -u ${DOCKER_USERNAME} --password-stdin"
-                        '''
-                        docker.image("${DOCKER_IMAGE}:latest").push()
+                            echo ${DOCKER_PASSWORD}
+                            docker login -u ${DOCKER_USERNAME} --password-stdin
+                        '''                        
+                            docker.withRegistry('https://registry.hub.docker.com') {
+                            docker.image("${DOCKER_IMAGE}:latest").push()
+                        }
                     }
                 }
             }
