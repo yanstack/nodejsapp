@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-jenkins')
         DOCKER_IMAGE = 'yanstack15/nodejsapp'
     }
 
@@ -18,7 +17,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', '${DOCKER_HUB_CREDENTIALS}') {
+                    docker.withRegistry('https://registry.hub.docker.com', '%credentials("docker-hub-jenkins")%') {
                         docker.image("${DOCKER_IMAGE}:latest").push()
                     }
                 }
