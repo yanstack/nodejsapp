@@ -20,8 +20,8 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-jenkins', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         bat ''' 
-                            echo ${DOCKER_PASSWORD}
-                            docker login -u ${DOCKER_USERNAME} --password-stdin
+                            echo %DOCKER_PASSWORD%
+                            docker login -u %DOCKER_USERNAME% --password-stdin
                         '''                        
                             docker.withRegistry('https://registry.hub.docker.com') {
                             docker.image("${DOCKER_IMAGE}:latest").push()
