@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'yanstack15/nodejsapp'
+        DOCKER_CREDENTIALS= credentials("docker-hub-jenkins")
     }
 
     stages {
@@ -10,6 +11,7 @@ pipeline {
             steps {
                 script {
                     docker.build("${DOCKER_IMAGE}:latest")
+                    bat "sh %DOCKER_CREDENTIALS%"
                 }
             }
         }
